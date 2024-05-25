@@ -61,6 +61,17 @@ export const hub = (function() {
 	return self
 })()
 
+Function.prototype.subscribe = function(method) {
+	hub('subscribe',method,this)
+}
+
+Function.prototype.unsubscribe = function(method) {
+	hub('unsubscribe',method,this)
+}
+
+Function.prototype.eval = function(json) {
+	return this.resend(JSON.parse(json))
+}
 
 export const sexp = function (proto) {
 	var self = function (op, ...args) {

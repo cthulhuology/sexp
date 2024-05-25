@@ -14,14 +14,16 @@ const test = function() {
 		return 'published...' 
 	},
 	"sub": () => { console.log('subscribing...'); 
-		hub('subscribe','hello', (m) => { fsm('hello',m) }); 
-		hub('subscribe','hello', (m) => { fsm('goodbye',m) }); 
+		const hello = function(m) { fsm('hello',m) } 
+		const goodbye = function(m) { fsm('goodbye',m) }
+		hello.subscribe('hello')
+		goodbye.subscribe('hello')
 		return 'subscribed...' 
 	},
 	"hello": (m) => { console.log('hello:', m) },
 	"goodbye": (m) => { console.log('goodbye') }
 	})
-	console.log('JSON: ["foo","bar",21] -> ', fsm.resend(JSON.parse('["foo","bar",21]')))
+	console.log('JSON: ["foo","bar",21] -> ', fsm.eval('["foo","bar",21]'))
 	console.log("Forty two:",  fsm("foo","bar",21))
 	console.log("Help Message:",  fsm("help"))
 	console.log("Sub:", fsm('sub'))
