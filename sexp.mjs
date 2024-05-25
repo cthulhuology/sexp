@@ -35,25 +35,33 @@ Function.prototype.resend = function(message) {
 	return this.apply(this,message)
 }
 
-export const hub = function(method,...message) {
-	const selector = message[0]
-	const target = message[1]
-	switch(method) {
-	case 'subscribe':
-		if (typeof(hub._queues[selector] != 'object')) hub._queues[selector] =  []
-		if (typeof(hub._queues[selector].indexOf(target) < 0)) hub._queues[selector].push(target)
-		break
-	case 'unsubscribe':
-		if (typeof(hub._queues[selector] != 'object')) return;
-		if (hub._queues[selector].indexOf(target) <0) return;
-		hub._queues[selector].splice(hub._queues[selector.indexOf(target)],1)
-		break
-	default:
-		if (typeof(hub._queues[selector]) != 'object') return;
-		hub._queues[selector].map( (o) => { o.resend(message) })
-		break
+export const hub = (function() {
+	const self = function(method,...message) {
+		const selector = message[0]
+		const target = message[1]
+		switch(method) {
+		case 'subscribe':
+			if (typeof(self._queues[selector]) != 'object') self._queues[selector] =  []
+			if (typeof(self._queues[selector].indexOf(target) < 0)) self._queues[selector].push(target)
+			break
+		case 'unsubscribe':
+			if (typeof(self._queues[selector]) != 'object') return;
+			if (self._queues[selector].indexOf(target) <0) return;
+			self._queues[selector].splice(self._queues[selector.indexOf(target)],1)
+			break
+		default:
+			if (typeof(self._queues[method]) != 'object') return;
+			self._queues[method].map( (o) => { 
+				o.resend(message) 
+			})
+			break
+		}
 	}
-}
+	self._queues = {}
+	return self
+})()
+
+
 export const sexp = function (proto) {
 	var self = function (op, ...args) {
 		if (this.hasOwnProperty(op) && typeof(this[op]) == 'function') return this[op].resend(args)
@@ -65,7 +73,7 @@ export const sexp = function (proto) {
 
 export const handler = function(E) {
 	var S = sexp(E)
-	return (M) => { return S.apply(null,M) }
+	return (...M) => { return S.apply(null,M) }
 }
 
 

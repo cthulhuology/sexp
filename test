@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+import { hub,handler } from './sexp.mjs'
+
+
+const test = function() {
+	const fsm = handler({
+	"foo" : {
+		"bar" : (x) => { return x*2 }
+	},
+	"help": () => { return 'hello world' },
+	"pub": (m) => { 
+		hub("hello","hello world"); 
+		return 'published...' 
+	},
+	"sub": () => { console.log('subscribing...'); 
+		hub('subscribe','hello', (m) => { fsm('hello',m) }); 
+		hub('subscribe','hello', (m) => { fsm('goodbye',m) }); 
+		return 'subscribed...' 
+	},
+	"hello": (m) => { console.log('hello:', m) },
+	"goodbye": (m) => { console.log('goodbye') }
+	})
+	console.log('JSON: ["foo","bar",21] -> ', fsm.resend(JSON.parse('["foo","bar",21]')))
+	console.log("Forty two:",  fsm("foo","bar",21))
+	console.log("Help Message:",  fsm("help"))
+	console.log("Sub:", fsm('sub'))
+	console.log("Pub:", fsm('pub'))
+	
+}
+
+test()

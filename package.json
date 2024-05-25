@@ -1,0 +1,24 @@
+{
+  "name": "dloh.sexp",
+  "version": "0.0.2",
+  "description": "Answering the question Sexp?",
+  "main": "sexp.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cthulhology/sexp.git"
+  },
+  "keywords": [
+    "s-expressions",
+    "javascript"
+  ],
+  "author": "David Goehrig <dave@dloh.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cthulhology/sexp/issues"
+  },
+  "homepage": "https://github.com/cthulhology/sexp"
+}
